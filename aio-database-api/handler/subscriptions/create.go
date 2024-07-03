@@ -22,7 +22,7 @@ func create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	event, err := webhook.ConstructEvent(data, r.Header.Get("Stripe-Signature"), "whsec_VyAo8EMLYAxwaGPBauVEGL1ZGlpMPSJ0")
+	event, err := webhook.ConstructEvent(data, r.Header.Get("Stripe-Signature"), "") // INSERT Stripe Webhook Secret
 	if err != nil {
 		console.ErrorRequest(w, r, err, http.StatusForbidden)
 		return
