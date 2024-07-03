@@ -1,4 +1,4 @@
-# Project Copped-AIO
+# Project Copped AIO
 ### First & only no-config, cloud-based Sneaker Bot
 
 ## Introduction
