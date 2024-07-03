@@ -27,7 +27,7 @@ func Handle(user string, instance string, l []Log) {
 			}
 
 			if time.Since(lastWebhook) > time.Second*30 {
-				err = webhook.New().AddEmbed(webhook.ErrorLog, log.Instance, string(b)).Send("") // Insert Webhook URL here
+				err = webhook.New().AddEmbed(webhook.ErrorLog, log.Instance, string(b)).Send("") // INSERT Webhook URL here
 				if err != nil {
 					console.ErrorLog(err)
 				}

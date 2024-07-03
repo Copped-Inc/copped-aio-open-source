@@ -9,7 +9,7 @@ import (
 )
 
 func Handle(interaction *disgo.Interaction, w http.ResponseWriter) {
-	if interaction.Guild_ID == disgo.Snowflake("") { // Insert Server ID here
+	if interaction.Guild_ID == disgo.Snowflake("") { // INSERT Server ID here
 		switch interaction.Data.Name {
 		case "captcha":
 			preharvest.Respond(interaction, w)

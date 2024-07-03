@@ -15,7 +15,7 @@ func download(f file, r *http.Request) error {
 		console.RequestLog(r, "Download", "File", f.name)
 	}
 
-	// Insert GITHUBHACCESSTOKEN here and correct COMPANY
+	// INSERT GITHUBHACCESSTOKEN here and correct COMPANY
 	req, err := http.NewRequest(http.MethodGet, "https://x-access-token:GITHUBHACCESSTOKEN@raw.githubusercontent.com/COMPANY"+f.path, nil)
 	if err != nil {
 		return err

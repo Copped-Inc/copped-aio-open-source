@@ -1,7 +1,7 @@
 package discord
 
 const (
-	PublicKey     = ""     // Insert Discord Public Key here
-	Bearer        = "Bot " // Insert Discord Bot Token here
-	Oauth2_Secret = ""     // Insert Discord Oauth2 Secret here
+	PublicKey     = ""     // INSERT Discord Public Key here
+	Bearer        = "Bot " // INSERT Discord Bot Token here
+	Oauth2_Secret = ""     // INSERT Discord Oauth2 Secret here
 )

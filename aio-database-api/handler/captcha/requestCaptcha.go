@@ -13,7 +13,7 @@ import (
 
 func requestCaptcha(s string) {
 
-	clientKey := "" // Insert CapSolver URL here
+	clientKey := "" // INSERT CapSolver URL here
 	baseUrl := "https://api.capsolver.com"
 
 	proxy := proxies.Dcs()

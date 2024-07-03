@@ -112,11 +112,11 @@ func post(w http.ResponseWriter, r *http.Request) {
 
 		if strings.Contains(strings.ToLower(req.Link), "vfb") {
 			webhook.SendMultiple([]string{
-				"", // Insert Webhook URL here
+				"", // INSERT Webhook URL here
 			})
 		} else {
 			webhook.SendMultiple([]string{
-				"", // Insert Webhook URL here
+				"", // INSERT Webhook URL here
 			})
 		}
 	}()

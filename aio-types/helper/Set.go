@@ -19,20 +19,20 @@ func Set(server string, opt ...any) {
 	var err error
 	switch server {
 	case "aio.copped-inc.com":
-		Webhook = "" // Insert Webhook URL here
+		Webhook = "" // INSERT Webhook URL here
 		err = realtimedb.Init(Active)
 	case "database.copped-inc.com":
 		RequestLog = true
-		Webhook = "" // Insert Webhook URL here
+		Webhook = "" // INSERT Webhook URL here
 		err = realtimedb.Init(ActiveData)
 	case "monitor.copped-inc.com":
-		Webhook = "" // Insert Webhook URL here
+		Webhook = "" // INSERT Webhook URL here
 		err = realtimedb.Init("https://monitor.copped-inc.com")
 	case "service.copped-inc.com":
-		Webhook = "" // Insert Webhook URL here
+		Webhook = "" // INSERT Webhook URL here
 		err = realtimedb.Init(ActiveService)
 	case "instances.copped-inc.com":
-		Webhook = "" // Insert Webhook URL here
+		Webhook = "" // INSERT Webhook URL here
 		err = realtimedb.Init(ActiveInstances)
 	}
 

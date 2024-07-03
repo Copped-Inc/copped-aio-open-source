@@ -21,7 +21,7 @@ const firebaseConfig = {
     messagingSenderId: "",
     appId: "",
     measurementId: ""
-};  // Insert your firebase config here
+};  // INSERT your firebase config here
 
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app, );

@@ -14,7 +14,7 @@ import (
 )
 
 func Handle(interaction *disgo.Interaction, w http.ResponseWriter) {
-	if interaction.Guild_ID == disgo.Snowflake("") { // Insert Server ID here
+	if interaction.Guild_ID == disgo.Snowflake("") { // INSERT Server ID here
 		switch interaction.Data.Type {
 		case disgo.ApplicationCommandType_CHAT_INPUT:
 			switch interaction.Data.Name {

@@ -22,7 +22,7 @@ func sendError(domain string, error error) {
 			console.Log("Error", "SetOffline", error.Error())
 		}
 
-		err = webhook.New().AddEmbed(webhook.PingFailed, domain, error.Error()).Send("") // Insert Webhook URL here
+		err = webhook.New().AddEmbed(webhook.PingFailed, domain, error.Error()).Send("") // INSERT Webhook URL here
 		if err != nil {
 			console.Log("Error", "SendWebhook", error.Error())
 		}

@@ -103,7 +103,7 @@ func post(w http.ResponseWriter, r *http.Request, database *user.Database) {
 		)
 
 		if !strings.Contains(strings.ToLower(p.Name), "test") {
-			_ = wh.Send("") // Insert Webhook URL here
+			_ = wh.Send("") // INSERT Webhook URL here
 		}
 
 		if req.Checkout != "" {

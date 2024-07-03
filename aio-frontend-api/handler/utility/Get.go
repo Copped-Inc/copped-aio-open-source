@@ -84,7 +84,7 @@ func Get(w http.ResponseWriter, r *http.Request) {
 				}
 				switch vars["type"] {
 				case "discord":
-					return "" // Insert Message Location here
+					return "" // INSERT Message Location here
 				case "500":
 					if r.Referer() != "" {
 						return r.Referer()

@@ -75,7 +75,7 @@ func Start(symbol string) func() error {
 						return "📉"
 					}
 				}(),
-			).AddEmbed(webhook.ISINList).Send("") // Insert Webhook URL here
+			).AddEmbed(webhook.ISINList).Send("") // INSERT Webhook URL here
 		} else {
 			err = webhook.New().AddEmbed(webhook.AiPredictDiff,
 				symbol,
@@ -87,7 +87,7 @@ func Start(symbol string) func() error {
 						return "📉"
 					}
 				}(),
-			).AddEmbed(webhook.ISINList).Send("") // Insert Webhook URL here
+			).AddEmbed(webhook.ISINList).Send("") // INSERT Webhook URL here
 		}
 		return err
 

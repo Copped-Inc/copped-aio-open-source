@@ -15,6 +15,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Post update
-        run: "curl -L 'https://database.copped-inc.com/instance/update/payments' -H 'Password: E&BWLL*2ROrv~8P19TN-f4_ZU=%c67[5' -H 'User-Agent: GitHub Workflow' -H 'version: 0.1.1' -H 'Content-Type: application/json' -d '{\"changelog\":[\"${{ github.event.head_commit.message }}\"]}'"
+      - name: Post update # INSERT the first -H should be the same password as the one in aio-types/secrets -> API_Admin_PW
+        run: "curl -L 'https://database.copped-inc.com/instance/update/payments' -H 'Password: PASSWORD' -H 'User-Agent: GitHub Workflow' -H 'version: 0.1.1' -H 'Content-Type: application/json' -d '{\"changelog\":[\"${{ github.event.head_commit.message }}\"]}'"
         

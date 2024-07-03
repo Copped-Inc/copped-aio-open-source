@@ -1,6 +1,6 @@
 package discord
 
 const (
-	Application_ID = "" // Insert Discord Application ID here
+	Application_ID = "" // INSERT Discord Application ID here
 	API_Version    = "10"
 )

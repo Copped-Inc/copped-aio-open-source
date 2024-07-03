@@ -75,10 +75,10 @@ func post(w http.ResponseWriter, r *http.Request) {
 		}
 
 		if f == "payments" {
-			go webhook.New().AddEmbed(webhook.UpdatePayments).SetFields(field).Send("") // Insert Webhook URL here
+			go webhook.New().AddEmbed(webhook.UpdatePayments).SetFields(field).Send("") // INSERT Webhook URL here
 
 		} else if f == "client" {
-			go webhook.New().AddEmbed(webhook.UpdateClient).SetFields(field).Send("") // Insert Webhook URL here
+			go webhook.New().AddEmbed(webhook.UpdateClient).SetFields(field).Send("") // INSERT Webhook URL here
 			go crosspost(req)
 		}
 	}()

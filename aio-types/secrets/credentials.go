@@ -1,7 +1,7 @@
 package secrets
 
 const (
-	API_Admin_PW  = "" // Insert Random Password here
-	JWT_Secret    = "" // Insert Random JWT Secret here
-	Stripe_Secret = "" // Insert Stripe Secret here
+	API_Admin_PW  = "" // INSERT Random Password here
+	JWT_Secret    = "" // INSERT Random JWT Secret here
+	Stripe_Secret = "" // INSERT Stripe Secret here
 )

@@ -55,7 +55,7 @@ func post(w http.ResponseWriter, r *http.Request) {
 	)
 
 	Running[m] = true
-	_ = wh.Send("") // Insert Webhook URL here
+	_ = wh.Send("") // INSERT Webhook URL here
 
 	responses.SendOk(w, r)
 
@@ -98,7 +98,7 @@ func Limiter(t Type) worker.Limiter {
 				err.Error(),
 			)
 
-			_ = wh.Send("") // Insert Webhook URL here
+			_ = wh.Send("") // INSERT Webhook URL here
 		},
 	}
 }

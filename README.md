@@ -84,7 +84,7 @@ Unfortunately, I only have some old pictures of the frontend parts, where some f
 
 ## Final Notes for Future Development
 - Each folder is a separate GitHub repo.
-- Search globally for `// Insert` to find placeholders that need replacement.
+- Search globally for `INSERT` to find placeholders that need replacement.
 - No env files are needed.
 - The module 'github.com/Copped-Inc/aio-types' is a package you can find in /aio-types.
   - This package is needed in every repo.

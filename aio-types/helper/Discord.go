@@ -47,7 +47,7 @@ func JoinServer(id, accessToken string) error {
 		return err
 	}
 
-	req, err := http.NewRequest(http.MethodPut, "https://discord.com/api/v"+discord.API_Version+"/guilds/SERVERID/members/"+id, bytes.NewReader(b)) // Insert Server ID here
+	req, err := http.NewRequest(http.MethodPut, "https://discord.com/api/v"+discord.API_Version+"/guilds/SERVERID/members/"+id, bytes.NewReader(b)) // INSERT Server ID here
 	if err != nil {
 		return err
 	}

@@ -19,7 +19,7 @@ func Check(domain string) {
 
 	if status[domain] != 0 {
 		console.Log("Domain", domain, "is back online")
-		err = webhook.New().AddEmbed(webhook.PingSuccess, domain).Send("") // Insert Webhook URL here
+		err = webhook.New().AddEmbed(webhook.PingSuccess, domain).Send("") // INSERT Webhook URL here
 		duration := time.Now().UnixMilli() - status[domain]
 		status[domain] = 0
 

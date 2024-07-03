@@ -67,7 +67,7 @@ func UpdateCache(p Product) {
 		wh.Embeds[len(wh.Embeds)-1].Description += add
 	}
 
-	err = wh.Update("") // Insert Webhook URL here
+	err = wh.Update("") // INSERT Webhook URL here
 	if err != nil {
 		console.ErrorLog(err)
 		return

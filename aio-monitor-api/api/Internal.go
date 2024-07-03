@@ -17,7 +17,7 @@ func InternalGet(path string) (*http.Response, error) {
 	}
 
 	req.Header.Set("User-Agent", "Monitor")
-	req.Header.Set("Password", "E&BWLL*2ROrv~8P19TN-f4_ZU=%c67[5")
+	req.Header.Set("Password", "") // INSERT aio-types/secrets -> API_Admin_PW
 	req.Header.Set("KithEU-Current-Sitekey", KithEuSiteKey)
 
 	res, err := (&http.Client{}).Do(req)
@@ -37,8 +37,8 @@ func InternalPost(data []byte, path string) (*http.Response, error) {
 		return nil, err
 	}
 
-	req.Header.Set("User-Agent", "Monitor")
-	req.Header.Set("Password", "E&BWLL*2ROrv~8P19TN-f4_ZU=%c67[5")
+	req.Header.Set("User-Agent", "Monitor") // INSERT aio-types/secrets -> API_Admin_PW
+	req.Header.Set("Password", "")
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("KithEU-Current-Sitekey", KithEuSiteKey)
 

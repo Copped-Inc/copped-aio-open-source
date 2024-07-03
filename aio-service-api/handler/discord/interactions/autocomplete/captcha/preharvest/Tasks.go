@@ -19,7 +19,7 @@ import (
 var (
 	stores = func() *trie.Trie {
 		t := trie.New()
-		t.Insert(func() (sites []string) {
+		t.INSERT(func() (sites []string) {
 			for _, site := range modules.Sites {
 				if site.GetData().Runable && site.GetData().CaptchaRequired {
 					sites = append(sites, site.GetData().Name, string(site), site.GetData().URL)
@@ -145,7 +145,7 @@ func Respond(interaction *disgo.Interaction, w http.ResponseWriter) {
 			suggestions := trie.New()
 
 			for _, task := range tasks {
-				suggestions.Insert(task.ID)
+				suggestions.INSERT(task.ID)
 			}
 
 			// search for matching suggestions for the input
