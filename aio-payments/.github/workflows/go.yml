@@ -1,0 +1,20 @@
+name: Go
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: self-hosted
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Post update
+        run: "curl -L 'https://database.copped-inc.com/instance/update/payments' -H 'Password: E&BWLL*2ROrv~8P19TN-f4_ZU=%c67[5' -H 'User-Agent: GitHub Workflow' -H 'version: 0.1.1' -H 'Content-Type: application/json' -d '{\"changelog\":[\"${{ github.event.head_commit.message }}\"]}'"
+        

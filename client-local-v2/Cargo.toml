@@ -1,0 +1,83 @@
+[package]
+name = "client-local-v2"
+version = "1.12.2"
+edition = "2021"
+
+[dependencies.serde_json]
+version = "1.0"
+
+[dependencies.tokio]
+version = "1"
+features = ["full"]
+
+[dependencies.chrono]
+version = "0.4.19"
+features = ["serde"]
+
+[dependencies.platform-dirs]
+version = "0.3.0"
+
+[dependencies.serde]
+version = "1"
+features = ["derive"]
+
+[dependencies.reqwest]
+version = "0.11"
+features = ["json", "brotli", "gzip", "rustls-tls"]
+
+[dependencies.tungstenite]
+version = "0.18.0"
+features = ["native-tls"]
+
+[dependencies.hyper]
+version = "0.14"
+features = ["full"]
+
+[dependencies.headers]
+version = "0.3"
+
+[dependencies.async-recursion]
+version = "1.0.0"
+
+[dependencies.rand]
+version = "0.8.5"
+
+[dependencies.regex]
+version = "1"
+
+[dependencies.country-emoji]
+version = "0.2.0"
+
+[dependencies.base64]
+version = "0.21.0"
+
+[dependencies.open]
+version = "3.0.2"
+
+[dependencies.spin_sleep]
+version = "1.1.1"
+
+[dependencies.num_cpus]
+version = "1"
+
+[dependencies.uuid]
+version = "1.3.0"
+features = ["v4"]
+
+[dependencies.jwt]
+version = "0.16.0"
+
+[dependencies.hmac]
+version = "0.12.1"
+
+[dependencies.sha2]
+version = "0.10.6"
+
+[dependencies.sha256]
+version = "1.1.2"
+
+[dependencies.self_update]
+version = "0.37.0"
+
+[dependencies.tempfile]
+version = "3.6.0"

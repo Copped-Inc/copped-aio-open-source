@@ -1,0 +1,46 @@
+name: Go
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: self-hosted
+    env:
+      GOPRIVATE: github.com/infinitare/*,github.com/Copped-Inc/*
+      GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+      DOCKER_BUILDKIT: 1
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.19
+
+      - run: git config --global url."https://$GH_ACCESS_TOKEN@github.com".insteadOf https://github.com
+
+      - name: Test Build
+        run: go build -v ./...
+
+      - name: Check User
+        run: id
+
+      - name: Stop old Docker
+        continue-on-error: true
+        run: docker stop aio.copped-inc.com
+
+      - name: Remove old Docker
+        continue-on-error: true
+        run: docker rm aio.copped-inc.com
+
+      - name: Remove old Docker Image
+        continue-on-error: true
+        run: docker image rm aio.copped-inc.com
+
+      - name: Deploy to Docker
+        run: docker build --secret id=gh_access_token,env=GH_ACCESS_TOKEN -t aio.copped-inc.com .
+
+      - name: Run new Docker
+        run: docker run -d -p 90:90 --name aio.copped-inc.com --restart always aio.copped-inc.com

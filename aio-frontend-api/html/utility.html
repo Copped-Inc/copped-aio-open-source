@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{{ .ErrorTitle }}</title>
+
+        <link rel="stylesheet" href="css/main.css" />
+        <link rel="stylesheet" href="css/window.css" />
+        <link rel="stylesheet" href="css/utility.css" />
+    </head>
+    <body>
+        <div class="window" id="passwordwindow">
+            <div class="holder">
+                <div class="brand">
+                    <img src="img/logo.png" alt="logo" />
+                    <h1>{{ .ErrorTitle }}</h1>
+                    <h6 class="less-space">{{ .ErrorMessage }}</h6>
+                </div>
+                {{ if .Button }}
+                <div class="holder-element">
+                    <button
+                        onclick="'{{ .ButtonLocation }}'.includes('\/\/:') ? ('{{ .ButtonLocation }}'.includes(window.location.host) ? window.location = '{{ .ButtonLocation }}'.split(window.location.host)[1] : window.location.replace('{{ .ButtonLocation }}')) : window.location = '{{ .ButtonLocation }}'"
+                        class="more-space"
+                        id="loginbutton"
+                    >
+                        {{ .ButtonTitle }}
+                        <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="arrow-right" class="svg-inline--fa fa-arrow-right transition duration-300 group-hover:translate-x-1 ml-2" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M264.6 70.63l176 168c4.75 4.531 7.438 10.81 7.438 17.38s-2.688 12.84-7.438 17.38l-176 168c-9.594 9.125-24.78 8.781-33.94-.8125c-9.156-9.5-8.812-24.75 .8125-33.94l132.7-126.6H24.01c-13.25 0-24.01-10.76-24.01-24.01s10.76-23.99 24.01-23.99h340.1l-132.7-126.6C221.8 96.23 221.5 80.98 230.6 71.45C239.8 61.85 254.1 61.51 264.6 70.63z"></path></svg>
+                    </button>
+                </div>
+                {{ end }}
+            </div>
+        </div>
+    </body>
+</html>

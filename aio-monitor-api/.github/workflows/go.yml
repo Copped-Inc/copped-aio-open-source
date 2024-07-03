@@ -1,0 +1,47 @@
+name: Go
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+
+  build:
+    runs-on: self-hosted
+    env:
+      GOPRIVATE: github.com/infinitare/disgo
+      GH_ACCESS_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+      DOCKER_BUILDKIT: 1
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.19
+
+      - run: git config --global url."https://$GH_ACCESS_TOKEN@github.com".insteadOf https://github.com
+
+      - name: Test Build
+        run: go build -v ./...
+
+      - name: Check User
+        run: id
+
+      - name: Stop old Docker
+        continue-on-error: true
+        run: docker stop monitor.copped-inc.com
+
+      - name: Remove old Docker
+        continue-on-error: true
+        run: docker rm monitor.copped-inc.com
+
+      - name: Remove old Docker Image
+        continue-on-error: true
+        run: docker image rm monitor.copped-inc.com
+
+      - name: Deploy to Docker
+        run: docker build --secret id=gh_access_token,env=GH_ACCESS_TOKEN -t monitor.copped-inc.com .
+
+      - name: Run new Docker
+        run: docker run -d -p 92:92 --name monitor.copped-inc.com --restart always monitor.copped-inc.com

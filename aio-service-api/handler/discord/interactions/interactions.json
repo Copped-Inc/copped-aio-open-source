@@ -1,0 +1,225 @@
+{
+    "application_commands": [
+        {
+            "name": "monitor blacklist",
+            "default_member_permissions": "0",
+            "dm_permission": false,
+            "type": 3
+        },
+        {
+            "name": "monitor",
+            "description": "specify which items are being monitored",
+            "default_member_permissions": "0",
+            "dm_permission": false,
+            "type": 1,
+            "options": [
+                {
+                    "name": "blacklist",
+                    "description": "blacklists the item specified by the sku or handle",
+                    "type": 1,
+                    "options": [
+                        {
+                            "name": "sku",
+                            "description": "provide the sku of the item to be blacklisted",
+                            "type": 3
+                        },
+                        {
+                            "name": "handle",
+                            "description": "provide the handle of the item to be blacklisted",
+                            "type": 3
+                        }
+                    ]
+                },
+                {
+                    "name": "whitelist",
+                    "description": "whitelists the item specified by the sku or handle",
+                    "type": 1,
+                    "options": [
+                        {
+                            "name": "sku",
+                            "description": "provide the sku of the item to be whitelisted",
+                            "type": 3
+                        },
+                        {
+                            "name": "handle",
+                            "description": "provide the handle of the item to be whitelisted",
+                            "type": 3
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "instance",
+            "description": "manage all things Copped AIO client",
+            "default_member_permissions": "0",
+            "dm_permission": false,
+            "type": 1,
+            "options": [
+                {
+                    "name": "update",
+                    "description": "send an update notice after the Copped AIO client version changes",
+                    "type": 1
+                }
+            ]
+        },
+        {
+            "name": "purchase",
+            "description": "manage purchases",
+            "default_member_permissions": "0",
+            "dm_permission": false,
+            "type": 1,
+            "options": [
+                {
+                    "name": "links",
+                    "description": "manage purchase links",
+                    "type": 2,
+                    "options": [
+                        {
+                            "name": "new",
+                            "description": "generate a new purchase link",
+                            "type": 1,
+                            "options": [
+                                {
+                                    "name": "plan",
+                                    "description": "select which plan the purchase link belongs to",
+                                    "required": true,
+                                    "type": 4
+                                },
+                                {
+                                    "name": "stock",
+                                    "description": "the amount of purchases allowed using this link",
+                                    "required": true,
+                                    "type": 4,
+                                    "min_value": 1
+                                },
+                                {
+                                    "name": "instance_limit",
+                                    "description": "how many instances can be run simultaneously with the Copped AIO license purchased via this link",
+                                    "required": true,
+                                    "type": 4,
+                                    "min_value": 1
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "newsletter",
+            "description": "send a newsletter to the users' emails",
+            "default_member_permissions": "0",
+            "dm_permission": false,
+            "type": 1,
+            "options": [
+                {
+                    "name": "cache",
+                    "description": "whether to reuse the input you have already submitted for this interaction, if any",
+                    "type": 5
+                }
+            ]
+        },
+        {
+            "name": "captcha",
+            "description": "perform various actions related to captcha generation",
+            "default_member_permissions": "0",
+            "dm_permission": false,
+            "type": 1,
+            "options": [
+                {
+                    "name": "preharvest",
+                    "description": "manage captcha preharvesting",
+                    "type": 2,
+                    "options": [
+                        {
+                            "name": "new",
+                            "description": "create a new preharvest task",
+                            "type": 1,
+                            "options": [
+                                {
+                                    "name": "site",
+                                    "description": "specify which site the captchas should be preharvested for",
+                                    "required": true,
+                                    "type": 3,
+                                    "autocomplete": true
+                                },
+                                {
+                                    "name": "delay",
+                                    "description": "provide a delay in minutes to schedule this preharvest task's inital start",
+                                    "type": 10,
+                                    "min_value": 1.5
+                                },
+                                {
+                                    "name": "routine",
+                                    "description": "whether this task should run more than once / regularly",
+                                    "type": 5
+                                }
+                            ]
+                        },
+                        {
+                            "name": "active",
+                            "description": "list all active preharvest task",
+                            "type": 1,
+                            "options": [
+                                {
+                                    "name": "id",
+                                    "description": "retrieve a specifc preharvest task",
+                                    "autocomplete": true,
+                                    "type": 3
+                                },
+                                {
+                                    "name": "user",
+                                    "description": "the user to retrieve preharvest tasks for - admin only",
+                                    "type": 6
+                                }
+                            ]
+                        },
+                        {
+                            "name": "stop",
+                            "description": "stop an active preharvest task",
+                            "type": 1,
+                            "options": [
+                                {
+                                    "name": "id",
+                                    "description": "specify the preharvest task to stop",
+                                    "required": true,
+                                    "autocomplete": true,
+                                    "type": 3
+                                }
+                            ]
+                        },
+                        {
+                            "name": "restart",
+                            "description": "restart a previously stopped preharvest task",
+                            "type": 1,
+                            "options": [
+                                {
+                                    "name": "id",
+                                    "description": "specify which preharvest task to restart",
+                                    "required": true,
+                                    "autocomplete": true,
+                                    "type": 3
+                                }
+                            ]
+                        },
+                        {
+                            "name": "remove",
+                            "description": "delete a preharvest task",
+                            "type": 1,
+                            "options": [
+                                {
+                                    "name": "id",
+                                    "description": "specify which preharvest task should be deleted",
+                                    "required": true,
+                                    "autocomplete": true,
+                                    "type": 3
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

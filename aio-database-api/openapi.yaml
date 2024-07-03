@@ -1,0 +1,1633 @@
+openapi: 3.1.0
+info:
+   title: Copped AIO database API
+   description: Documentation for the [Copped AIO](https://aio.copped-inc.com) database API
+   version: 0.0.1
+
+servers:
+   - url: https://database.copped-inc.com
+
+tags:
+   - name: captcha
+   - name: newsletter
+   - name: notification
+   - name: infrastructure
+   - name: purchase
+   - name: websocket
+   - name: user
+   - name: instance
+
+paths:
+   /captcha/challenge:
+      get:
+         tags:
+            - captcha
+         summary: Get KithEU sitekey
+         description: Get the current KithEU sitekey used in captcha challenges
+         operationId: getCaptchaChallenge
+         responses:
+            "200":
+               description: The currently used KithEU sitekey
+               content:
+                  application/json:
+                     schema:
+                        type: object
+                        properties:
+                           sitekey:
+                              type: string
+                     examples:
+                        kithEu:
+                           summary: KithEU sitekey
+                           value:
+                              sitekey: b989d9e8-0d14-41a0-870f-97b5283ba67d
+            "5XX":
+               $ref: "#/components/responses/5XX"
+
+   /captcha/{site}:
+      get:
+         tags:
+            - captcha
+         summary: Generate Captchas
+         description: Generate captchas for the specified site
+         operationId: getCaptcha
+         parameters:
+            - name: site
+              in: path
+              description: The site to generate captchas for
+              schema:
+                 $ref: "#/components/schemas/site"
+                 enum:
+                    - kith_eu
+              required: true
+         responses:
+            "200":
+               description: Captchas generated successfully. This might a while!
+               content:
+                  application/json:
+                     schema:
+                        type: object
+                        properties:
+                           token:
+                              type: array
+                              items:
+                                 type: string
+                              minItems: 2
+                              maxItems: 2
+                           expire:
+                              type: string
+                              format: date-time
+                     examples:
+                        kithEu:
+                           summary: KithEU
+                           description: KithEU captcha response
+                           value:
+                              token:
+                                 - asd
+                                 - asds
+                              expire: asd
+            "400":
+               description: Invalid site parameter
+               $ref: "#/components/responses/400"
+            "401":
+               $ref: "#/components/responses/401"
+            "408":
+               description: Failed to generate captchas
+               content:
+                  text/plain:
+                     schema:
+                        type: string
+                     examples:
+                        timedOut:
+                           summary: Request timeout
+                           description: Requesting captchas took too long
+                           value: Request timeout
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         # callbacks:
+         #   generateCaptchas:
+         #      /createTask:
+         #         servers:
+         #            - url: https://api.capsolver.com
+         #         post:
+         #            summary: Initializes captcha generation for the specified site
+         #            requestBody:
+         #               content:
+         #                  application/json:
+         #                     schema:
+         #                        type: object
+         #                        properties:
+         #                           clientKey:
+         #                              type: string
+         #                           task:
+         #                              type: object
+         #                              properties:
+         #                                 type:
+         #                                    type: string
+         #                                 websiteURL:
+         #                                    type: string
+         #                                    format: uri
+         #                                 websiteKey:
+         #                                    type: string
+         #                                 proxy:
+         #                                    type: string
+         #                                    format: uri
+         #                                 userAgent:
+         #                                    type: string
+         #                                 isInvisible:
+         #                                    type: boolean
+         #                              required:
+         #                                 - type
+         #                                 - websiteURL
+         #                                 - websiteKey
+         #                                 - proxy
+         #                                 - userAgent
+         #                                 - isInvisible
+         #                           callBackUrl:
+         #                              type: string
+         #                              format: uri
+         #                        required:
+         #                           - clientKey
+         #                           - task
+         #                           - callBackUrl
+         #               required: true
+         #            responses:
+         #               "200":
+         #                  description: Captcha task created successfully
+         #                  content:
+         #                     application/json:
+         #                        schema:
+         #                           type: object
+         #                           properties:
+         #                              errorId:
+         #                                 type: integer
+         #                                 minimum: 0
+         #                              taskId:
+         #                                 type: string
+         #                              status:
+         #                                 type: string
+         #                           required:
+         #                              - errorId
+         #                              - taskId
+         #                              - status
+         security:
+            - admin: []
+            - user: []
+
+      post:
+         tags:
+            - captcha
+         summary: Solved captchas
+         description: Callback URL for captchas solved by an external service
+         operationId: createCaptcha
+         parameters:
+            - name: site
+              in: path
+              description: The type of captchas generated
+              schema:
+                 type: string
+              required: true
+         requestBody:
+            content:
+               application/json:
+                  schema:
+                     type: object
+                     properties:
+                        errorId:
+                           type: integer
+                           minimum: 0
+                        taskId:
+                           type: string
+                           minLength: 1
+                        status:
+                           type: string
+                           minLength: 1
+                        solution:
+                           type: object
+                           properties:
+                              gRecaptchaResponse:
+                                 type: string
+                                 minLength: 1
+                           required:
+                              - gRecaptchaResponse
+                     required:
+                        - errorId
+                        - taskId
+                        - status
+                        - solution
+                  examples:
+                     kithEu:
+                        summary: Kith EU
+                        description: Kith EU captcha creation task callback
+                        value:
+                           errorId: 0
+                           taskId: "5487a087-379c-4180-982b-0200d0fb27c2"
+                           status: "ready"
+                           solution:
+                              getCaptchaResponse: "P1_eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.hKdwYXNza2V5xQUwwBbBsfAecLgZmvKps5-eDLG_fEZ6k34oapG8631OY2UL4cXwYhWBjMPpg4013NtCC9YDjZlHWadJPhk8SRg3kNECbmw3vOyZQw9ltr4PREzoKoh1vFMyTLmvQO24IEVUkJndZYtN7bn9ng_xZaEwDJ9uyhOkU1WMlFeFNZUFo0kdLlYOMV5j712PjSpBlmLOfDEr1cH2WiRtYdf-B3_mS3dmG5YZNDAiOFyJpCv8Q_tCURD612LcZbxrylaZCI-tCoeQz1PUh69PSyogF6Kf-Bi9Of3svLr_wGTAgUKyY2GQFC85LLDjQj1O1t4y2WlPpdj7UvJTVzgEh6TU6_pnSTh7eq7uFq1567rZYwdX43ZngvaslgwD8UkqifzJtTteRFcJvABZ0DByru2aFUXLWyv2AQwFwzVQSWxLMDXwL83a8bxFVCdR9YTgXnAv2lxZM4NcmBO0MuwuZWCvk3E7Ehxsj2qZUvydovlo1RmjsYpKf4qIn2vMSl3NUh9XvzQLRQxbLZMxg3Kb2-O8p2o_9vXIDqxcsynIn-x6rmaToTYkm5OEjo1etCh_LSoDp8gztHA4rdANAtsu-K2di90YYuOCrajA_f1MrBo-TdXYwyshGeu60Jqus0tbDwYVBQQjvSytTRiR4xBUd9QWRMopsWUY8h-W-s_DQblUaHLjRW5rpyVz4G_gHxghVe18X4dvv1Zu7M2yXMvca0vpGBj_xySnGeg2Cswqkey5pjXN0Z17E7T8oo-WGz5mbFFRmVFTD_wKi4LY0p3ltKjS4JNcix3trRpPV4YR4Zg7eTO3Gf4v94gpqK4P9fsxJOwa9Ul2IFvHRiRIG4s8WHifgmA61ve58bKtxfP1RnY1yQkNjxGu1YoDnj0deZBKpT6dXr6Tz7deR_CYR0hdwVroRrMMFVnhdwhs1HrAqLk5-H7CLsuYrAkBcmgHD9qOIN9p5kNSZd1ffijUtMdokDxVomHo2ofrB8mXMk_X3awAhM3ew9B8qBtGX2o4QMivUnfOtCdde88UScm2DS6UaRRm0F-IGpz7_r6CS5dO48die4a1pW0RflIDsCWfPJIf1mcaRvWJmho0IZtMxkvrr7Jf-hRU1opm4UboAm2Ds-W7A0VOhThTiM_99K7nOIsul4xq5Di-pyRo72O2ECvyrKwjssF5n22MJh8JK1fh7m5m2OMRp8b9bwxSZHnYHOfaj3JO7MC_wp-r-5MrRMgKc82wkkx0QSzYrjIVwbrq9QN6Xsu42SfEK8ve8RK7sgGOp98MauvYGGiPTdXZYDICVaSOl5Mvi6hOA_P32seChRdsnqIAbxxpo3BrAf8A9BouPngydpi_aLwDz6w8T0SKaHV3gEsn2SpMTbZGtboJ-VtRGNKPkbvrYZHRVzl9DM_aoPKQaiQh2HosLr6avDUrNO6i3W3ew9052KiaeY5a6kgkaAkZMQmMBI1Z85CfbaAU-764rYoRvo0igqyN9ONHtHJS95qSF8EG-4iZtuYY3kRhKaR4kquN9kQps0jyBGzkLcE5JlcY7YF9XKe5NGO5DXd1fgcIXjJ_N-5nftulLvysVPoZFL1Sz9fmjzDpOj0Em8AI7Vge565OwHvPNKSevp7KC_UN81rG_zsHqDOKBXEnqiZtgLsh9rYQCmKWxHS4Wmd13Lui021QdLmHcI7AA0tIUWr1EOf-zpVdoQoMOOStaNDV_Ea9e6D1BbAjzaeXNB02q7q3kcmSeZFCnUy6awmZ9c5a0K0CIjPPf0rFuG6d25noOhSjZXhwzmUENqaoc2hhcmRfaWTOFDyEH6JwZAA.lEVmD-SVAdOqt6MAtLGIM89t6MvvPwO2PlUjHA4N6BU"
+
+            required: true
+         responses:
+            "200":
+               description: Captchas have been generated successfully
+               $ref: "#/components/responses/200"
+            "400":
+               description: Captcha type invalid or captcha generation failed
+               $ref: "#/components/responses/400"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+
+   /captcha/preharvest:
+      get:
+         tags:
+            - captcha
+         summary: Get captcha preharvest tasks
+         description: Retrieve all captcha preharvest tasks
+         operationId: getPreharvestTasks
+         parameters:
+            - $ref: "#/components/parameters/sort"
+            - $ref: "#/components/parameters/limit"
+            - $ref: "#/components/parameters/after"
+            - $ref: "#/components/parameters/before"
+         responses:
+            "200":
+               description: An array of preharvest task(s).
+               content:
+                  application/json:
+                     schema:
+                        type: array
+                        items:
+                           $ref: "#/components/schemas/preharvestTask"
+                     examples:
+                        preharvestTasks:
+                           summary: Captcha preharvest tasks
+                           description: A list of captcha preharvest tasks
+            "204":
+               description: No captcha preharvest tasks found
+            "401":
+               $ref: "#/components/responses/401"
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - admin: []
+
+   /captcha/preharvest/{task-id}:
+      patch:
+         tags:
+            - captcha
+         summary: Edit captcha preharvest task
+         description: Edit the specified captcha preharvest task
+         operationId: editPreharvestTask
+         parameters:
+            - description: The captcha preharvest task to be edited
+              $ref: "#/components/parameters/task-id"
+         requestBody:
+            content:
+               application/json:
+                  schema:
+                     type: object
+                     description:
+                     minProperties: 1
+                     properties:
+                        state:
+                           $ref: "#/components/schemas/preharvestTaskState"
+                        uses:
+                           type: integer
+                           minimum: 0
+                           maximum: 7
+                        schedule:
+                           $ref: "#/components/schemas/preharvestTaskSchedule"
+                        date:
+                           $ref: "#/components/schemas/date"
+                  examples:
+                     updateUses:
+                        summary: Update uses
+                        description: Update the remaining uses of the captcha preharvest task.
+                        value:
+                           uses: 2
+                     updateSchedule:
+                        summary: Update schedule
+                        description: Update the captcha preharvest task's schedule.
+                        value:
+                           schedule: every 2 days
+            required: true
+         responses:
+            "200":
+               description: Captcha preharvest task edited successfully
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/notification"
+                     examples:
+                        globalNotification:
+                           summary: Global notification
+                           description: The edited global notification.
+                           value:
+                              id: "rRij2j86JzU8rpQP9IBx"
+                              created_at: "2023-08-30T11:33:47.742543Z"
+                              title: "foo"
+                              text: "baz"
+            "304":
+               $ref: "#/components/responses/304"
+            "400":
+               $ref: "#/components/responses/400"
+            "401":
+               $ref: "#/components/responses/401"
+            "404":
+               description: "Captcha preharvest task not found"
+               $ref: "#/components/responses/404"
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - admin: []
+
+   /newsletter:
+      post:
+         tags:
+            - newsletter
+         summary: Send newsletter
+         description: Send an e-mail newsletter to all users
+         operationId: createNewsletter
+         requestBody:
+            content:
+               application/json:
+                  schema:
+                     type: object
+                     properties:
+                        title:
+                           type: string
+                        subtitle:
+                           type: string
+                        text:
+                           type: string
+                        button:
+                           type: boolean
+                        button_url:
+                           type: string
+                           format: uri
+                        button_text:
+                           type: string
+                        bellow_button:
+                           type: string
+            required: true
+         responses:
+            "200":
+               description: Newsletter sent successfully
+               $ref: "#/components/responses/200"
+            "400":
+               $ref: "#/components/responses/400"
+            "401":
+               $ref: "#/components/responses/401"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - admin: []
+
+   /notifications:
+      get:
+         tags:
+            - notification
+         summary: Retrieve global notifications
+         description: Retrieve all global notifications
+         operationId: getGlobalNotifications
+         responses:
+            "200":
+               description: |
+                  Global notifications retrieved successfully.  
+                  Results are ordered by `created_at` date in descending order.
+               content:
+                  application/json:
+                     schema:
+                        type: array
+                        items:
+                           $ref: "#/components/schemas/notification"
+                     examples:
+                        globalNotifications:
+                           summary: Global notifications
+                           description: Array of global notification(s)
+                           value:
+                              - id: "rRij2j86JzU8rpQP9IBx"
+                                created_at: "2023-08-30T11:33:47.742543Z"
+                                title: "foo"
+                                text: "bar"
+            "204":
+               description: No global notifications found
+            "401":
+               $ref: "#/components/responses/401"
+            "403":
+               $ref: "#/components/responses/403"
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - admin: []
+
+      post:
+         tags:
+            - notification
+         summary: Create global notification
+         description: Create a global notification
+         operationId: createGlobalNotification
+         requestBody:
+            content:
+               application/json:
+                  schema:
+                     $ref: "#/components/schemas/notificationCreate"
+                  examples:
+                     globalNotification:
+                        summary: Global notification
+                        value:
+                           title: foo
+                           text: bar
+            required: true
+         responses:
+            "201":
+               description: Global notification created successfully
+               $ref: "#/components/responses/globalNotification"
+            "400":
+               $ref: "#/components/responses/400"
+            "401":
+               $ref: "#/components/responses/401"
+            "403":
+               $ref: "#/components/responses/403"
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - admin: []
+
+      delete:
+         tags:
+            - notification
+         summary: Bulkdelete global notifications
+         description: Delete all global notifications
+         operationId: deleteGlobalNotifications
+         responses:
+            "204":
+               description: Global notifications deleted successfully
+            "401":
+               $ref: "#/components/responses/401"
+            "403":
+               $ref: "#/components/responses/403"
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - admin: []
+
+   /notifications/{notification-id}:
+      get:
+         tags:
+            - notification
+         summary: Retrieve global notification
+         description: Retrieve the selected global notification
+         operationId: getGlobalNotification
+         parameters:
+            - description: The ID of the notification to be retrieved
+              $ref: "#/components/parameters/notification-id"
+         responses:
+            "200":
+               $ref: "#/components/responses/globalNotification"
+            "401":
+               $ref: "#/components/responses/401"
+            "404":
+               description: "Global notification doesn't exist"
+               $ref: "#/components/responses/404"
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - admin: []
+            - user: []
+
+      patch:
+         tags:
+            - notification
+         summary: Edit global notification
+         description: Edit the selected global notification
+         operationId: editGlobalNotification
+         parameters:
+            - description: The ID of the notification to be edited
+              $ref: "#/components/parameters/notification-id"
+         requestBody:
+            description: |
+               ```
+               All fields for this endpoint are optional.
+               Only provided fields will be changed.
+               ```
+            content:
+               application/json:
+                  schema:
+                     $ref: "#/components/schemas/notificationEdit"
+                     minProperties: 1
+                  examples:
+                     globalNotification:
+                        summary: Global notification
+                        description: The field(s) to be changed to the value(s) specified.
+                        value:
+                           text: baz
+         responses:
+            "200":
+               description: Global notification edited successfully
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/notification"
+                     examples:
+                        globalNotification:
+                           summary: Global notification
+                           description: The edited global notification.
+                           value:
+                              id: "rRij2j86JzU8rpQP9IBx"
+                              created_at: "2023-08-30T11:33:47.742543Z"
+                              title: "foo"
+                              text: "baz"
+            "304":
+               $ref: "#/components/responses/304"
+            "400":
+               $ref: "#/components/responses/400"
+            "401":
+               $ref: "#/components/responses/401"
+            "403":
+               $ref: "#/components/responses/403"
+            "404":
+               description: "Global notification doesn't exist"
+               $ref: "#/components/responses/404"
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - admin: []
+
+      delete:
+         tags:
+            - notification
+         summary: Delete global notification
+         description: Delete the specified global notification
+         operationId: deleteGlobalNotification
+         parameters:
+            - description: The ID of the notification to be deleted
+              $ref: "#/components/parameters/notification-id"
+         responses:
+            "204":
+               description: Global notification deleted successfully
+            "401":
+               $ref: "#/components/responses/401"
+            "403":
+               $ref: "#/components/responses/403"
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - admin: []
+
+   /notifications/users/{user-id}:
+      get:
+         tags:
+            - notification
+         summary: Retrieve user notifications
+         description: Retrieve all notifications of the specified user
+         operationId: getUserNotifications
+         parameters:
+            - description: The ID of the user to retrieve notifications for
+              $ref: "#/components/parameters/user-id"
+         responses:
+            "200":
+               $ref: "#/components/responses/userNotifications"
+            "204":
+               description: User doesn't have any notifications
+            "401":
+               $ref: "#/components/responses/401"
+            "403":
+               description: Non-permissive attempt to retrieve another user's notifications. Use `@me` instead of an absolute `user-id` parameter to avoid running into this issue.
+               $ref: "#/components/responses/403"
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - admin: []
+            - user: []
+
+      post:
+         tags:
+            - notification
+         summary: Create user notification
+         description: Create a new notification for the specified user
+         operationId: createUserNotification
+         parameters:
+            - description: The ID of the user receiving the notification
+              $ref: "#/components/parameters/user-id"
+         requestBody:
+            content:
+               application/json:
+                  schema:
+                     $ref: "#/components/schemas/notificationCreate"
+                  examples:
+                     userNotification:
+                        summary: User notification
+                        value:
+                           title: foo
+                           text: bar
+            required: true
+         responses:
+            "201":
+               description: User notification created successfully
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/notification"
+                     examples:
+                        UserNotification:
+                           $ref: "#/components/examples/userNotification"
+            "400":
+               $ref: "#/components/responses/400"
+            "401":
+               $ref: "#/components/responses/401"
+            "403":
+               $ref: "#/components/responses/403"
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - admin: []
+
+      put:
+         tags:
+            - notification
+         summary: Update user notification read states
+         description: Update the notification `read` state for all notifications of the specified user
+         operationId: updateUserNotificationReadstates
+         parameters:
+            - description: The ID of the user to update the notification read state for
+              $ref: "#/components/parameters/user-id"
+         requestBody:
+            $ref: "#/components/requestBodies/editNotificationReadstates"
+         responses:
+            "200":
+               description: User's notifications' read state updated successfully
+            "304":
+               $ref: "#/components/responses/304"
+            "400":
+               $ref: "#/components/responses/400"
+            "401":
+               $ref: "#/components/responses/401"
+            "403":
+               description: Non-permissive attempt to edit another user's notifications' read state. Use `@me` instead of an absolute `user-id` parameter to avoid running into this issue.
+               $ref: "#/components/responses/403"
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - admin: []
+            - user: []
+
+      delete:
+         tags:
+            - notification
+         summary: Bulkdelete user notifications
+         description: Delete all notification of the specified user
+         operationId: deleteUserNotifications
+         parameters:
+            - description: The ID of the user to delete all notifications for
+              $ref: "#/components/parameters/user-id"
+         responses:
+            "204":
+               description: User notifications deleted successfully
+            "401":
+               $ref: "#/components/responses/401"
+            "403":
+               description: Non-permissive attempt to delete another user's notifications. Use `@me` instead of an absolute `user-id` parameter to avoid running into this issue.
+               $ref: "#/components/responses/403"
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - admin: []
+            - user: []
+
+   /notifications/{notification-id}/users/{user-id}:
+      get:
+         tags:
+            - notification
+         summary: Retrieve user notification
+         description: Retrieve the specified notification of the selected user
+         operationId: getUserNotification
+         parameters:
+            - description: The ID of the notification to be retrieved
+              $ref: "#/components/parameters/notification-id"
+            - description: The ID of the user to retrieve the notification of
+              $ref: "#/components/parameters/user-id"
+         responses:
+            "200":
+               $ref: "#/components/responses/userNotification"
+            "401":
+               $ref: "#/components/responses/401"
+            "403":
+               description: Non-permissive attempt to retrieve another user's notification. Use `@me` instead of an absolute `user-id` parameter to avoid running into this issue.
+               $ref: "#/components/responses/403"
+            "404":
+               description: "User notification doesn't exist"
+               $ref: "#/components/responses/404"
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - admin: []
+            - user: []
+
+      patch:
+         tags:
+            - notification
+         summary: Edit user notification
+         description: Edit the selected notification of the specified user
+         operationId: updateUserNotification
+         parameters:
+            - description: The ID of the notification to be edited
+              $ref: "#/components/parameters/notification-id"
+            - description: The ID of the user whose notification to edit
+              $ref: "#/components/parameters/user-id"
+         requestBody:
+            $ref: "#/components/requestBodies/editUserNotification"
+         responses:
+            "200":
+               description: "User notification edited successfully"
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/notification"
+                     examples:
+                        userNotification:
+                           summary: User notification
+                           description: The edited notification with `read` changed to `true`.
+                           value:
+                              id: "KDlPN0v5COFk5zlRgkrK"
+                              created_at: "2023-08-21T13:13:16.672232Z"
+                              title: "foo"
+                              text: "bar"
+                              read: true
+            "304":
+               $ref: "#/components/responses/304"
+            "400":
+               $ref: "#/components/responses/400"
+            "401":
+               $ref: "#/components/responses/401"
+            "403":
+               description: Non-permissive attempt to edit another user's notification. Use `@me` instead of an absolute `user-id` parameter to avoid running into this issue.
+               $ref: "#/components/responses/403"
+            "404":
+               description: "User notification doesn't exist"
+               $ref: "#/components/responses/404"
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - admin: []
+            - user: []
+
+      delete:
+         tags:
+            - notification
+         summary: Delete user notification
+         description: Delete the specified notification of the selected user
+         operationId: deleteUserNotification
+         parameters:
+            - description: The ID of the notification to be deleted
+              $ref: "#/components/parameters/notification-id"
+            - description: The ID of the user whose notification to delete
+              $ref: "#/components/parameters/user-id"
+         responses:
+            "204":
+               description: User notification deleted successfully
+            "401":
+               $ref: "#/components/responses/401"
+            "403":
+               description: Non-permissive attempt to delete another user's notification. Use `@me` instead of an absolute `user-id` parameter to avoid running into this issue.
+               $ref: "#/components/responses/403"
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - admin: []
+            - user: []
+
+   /notifications/users/@me:
+      get:
+         tags:
+            - notification
+         summary: Retrieve notifications
+         description: Retrieve all notifications of the user currently logged in
+         operationId: getNotifications
+         responses:
+            "200":
+               $ref: "#/components/responses/userNotifications"
+            "204":
+               description: Currently logged in user doesn't have any notifications
+            "401":
+               $ref: "#/components/responses/401"
+            "403":
+               description: This endpoint isn't supposed to be used with administrator credentials
+               $ref: "#/components/responses/403"
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - user: []
+
+      put:
+         tags:
+            - notification
+         summary: Update notification read states
+         description: Update the `read` state of all notifications of the user currently logged in
+         operationId: updateNotificationReadstates
+         requestBody:
+            $ref: "#/components/requestBodies/editNotificationReadstates"
+         responses:
+            "200":
+               description: Currently logged in user's notifications' read state updated successfully
+            "304":
+               $ref: "#/components/responses/304"
+            "400":
+               $ref: "#/components/responses/400"
+            "401":
+               $ref: "#/components/responses/401"
+            "403":
+               description: This endpoint isn't supposed to be used with administrator credentials
+               $ref: "#/components/responses/403"
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - user: []
+
+      delete:
+         tags:
+            - notification
+         summary: Bulkdelete notifications
+         description: Delete all notifications of the currently logged in user
+         operationId: deleteNotifications
+         responses:
+            "204":
+               description: Notifications deleted successfully
+            "401":
+               $ref: "#/components/responses/401"
+            "403":
+               description: This endpoint isn't supposed to be used with administrator credentials
+               $ref: "#/components/responses/403"
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - user: []
+
+   /notifications/{notification-id}/users/@me:
+      get:
+         tags:
+            - notification
+         summary: Retrieve notification
+         description: Retrieve the specified notification of the user currently logged in
+         operationId: getNotification
+         parameters:
+            - description: The ID of the notification to be retrieved
+              $ref: "#/components/parameters/notification-id"
+         responses:
+            "200":
+               $ref: "#/components/responses/userNotification"
+            "401":
+               $ref: "#/components/responses/401"
+            "403":
+               description: This endpoint isn't supposed to be used with administrator credentials
+               $ref: "#/components/responses/403"
+            "404":
+               description: "Notification doesn't exist"
+               $ref: "#/components/responses/404"
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - user: []
+
+      patch:
+         tags:
+            - notification
+         summary: Update notification
+         description: Update the `read` state of the specified notification of the currently logged in user
+         operationId: updateNotification
+         parameters:
+            - description: The ID of the notification to be edited
+              $ref: "#/components/parameters/notification-id"
+         requestBody:
+            $ref: "#/components/requestBodies/editUserNotification"
+         responses:
+            "200":
+               description: "Notification edited successfully"
+               content:
+                  application/json:
+                     schema:
+                        $ref: "#/components/schemas/notification"
+                     examples:
+                        UserNotification:
+                           summary: User notification
+                           description: The edited notification with `read` changed to `true`.
+                           value:
+                              id: "KDlPN0v5COFk5zlRgkrK"
+                              created_at: "2023-08-21T13:13:16.672232Z"
+                              title: "foo"
+                              text: "bar"
+                              read: true
+            "304":
+               $ref: "#/components/responses/304"
+            "400":
+               $ref: "#/components/responses/400"
+            "401":
+               $ref: "#/components/responses/401"
+            "403":
+               description: This endpoint isn't supposed to be used with administrator credentials
+               $ref: "#/components/responses/403"
+            "404":
+               description: "Notification doesn't exist"
+               $ref: "#/components/responses/404"
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - user: []
+
+      delete:
+         tags:
+            - notification
+         summary: Delete notification
+         description: Delete the specified notification of the user currently logged in
+         operationId: deleteNotification
+         parameters:
+            - description: The ID of the notification to be deleted
+              $ref: "#/components/parameters/notification-id"
+         responses:
+            "204":
+               description: Notification deleted successfully
+            "401":
+               $ref: "#/components/responses/401"
+            "403":
+               description: This endpoint isn't supposed to be used with administrator credentials
+               $ref: "#/components/responses/403"
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - user: []
+
+   /ping:
+      get:
+         tags:
+            - infrastructure
+         summary: Ping servers
+         description: Check whether the servers are currently up and running
+         operationId: getPing
+         responses:
+            "200":
+               description: Servers are up and running
+               $ref: "#/components/responses/200"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+
+   /purchase:
+      post:
+         tags:
+            - purchase
+         summary: Create purchase code
+         operationId: createPurchase
+         requestBody:
+            content:
+               application/json:
+                  schema:
+                     properties:
+                        plan:
+                           $ref: "#/components/schemas/plan"
+                           minimum: 1
+                        stock:
+                           description: How many subscriptions may be purchased using this link
+                           type: integer
+                           minimum: 1
+                        instance_limit:
+                           type: integer
+                           minimum: 1
+                     required:
+                        - plan
+                        - stock
+                        - instance_limit
+                  examples:
+                     basicSubscription:
+                        summary: Basic subscription
+                        description: A purchase link for a subscription to the *Basic* plan that can be used up to 3 times.
+                        value:
+                           plan: 2
+                           stock: 3
+                           instance_limit: 5
+            required: true
+         responses:
+            "201":
+               description: Purchase link created successfully
+               content:
+                  application/json:
+                     schema:
+                        type: object
+                        properties:
+                           link:
+                              type: string
+                              format: uri
+                              pattern: ^https://database.copped-inc.com/purchase/{code}$
+                        required:
+                           - link
+                     examples:
+                        purchaseLink:
+                           summary: Purchase link
+                           description: The link to purchase a subscription with the previously specified conditions under.
+                           value:
+                              link: https://database.copped-inc.com/purchase/Qqblm2YoscGON7VtBH0K
+            "400":
+               $ref: "#/components/responses/400"
+            "401":
+               $ref: "#/components/responses/401"
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - admin: []
+
+   /purchase/{code}:
+      get:
+         tags:
+            - purchase
+         summary: Purchase Copped AIO subscription
+         description: |
+            Use the purchase code to purchase a Copped AIO subscription.
+            ```
+            Reduces the remaining uses of the purchase code!
+            ```
+         operationId: getPurchase
+         parameters:
+            - name: code
+              description: The purchase code to be used, associated with a certain plan.
+              in: path
+              required: true
+              schema:
+                 type: string
+         responses:
+            "302":
+               description: Successful purchases get redirected to stripe or the dashboard, depending on the plan.
+               $ref: "#/components/responses/302"
+            "401":
+               description: Discord user must have a verified e-mail address
+               $ref: "#/components/responses/401"
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+
+   /websocket:
+      get:
+         tags:
+            - websocket
+         summary: Get websocket connection
+         description: Establishes a new websocket connection between a client and the API.
+         operationId: getWebsocket
+         responses:
+            "101":
+               description: Switching protocols
+               headers:
+                  Upgrade:
+                     schema:
+                        type: string
+                        enum: [websocket]
+                  Connection:
+                     schema:
+                        type: string
+                        enum: [upgrade]
+            "400":
+               description: Malformed request header
+               $ref: "#/components/responses/400"
+            "401":
+               $ref: "#/components/responses/401"
+            "406":
+               description: There already is an active websocket connection.
+               content:
+                  text/plain:
+                     schema:
+                        type: string
+                     examples:
+                        notAcceptable:
+                           summary: Not acceptable
+                           value: Not acceptable
+            "500":
+               $ref: "#/components/responses/500"
+            "5XX":
+               $ref: "#/components/responses/5XX"
+         security:
+            - user: []
+            - admin: []
+
+components:
+   parameters:
+      notification-id:
+         in: path
+         name: notification-id
+         required: true
+         schema:
+            type: string
+
+      user-id:
+         in: path
+         name: user-id
+         required: true
+         schema:
+            type: string
+
+      task-id:
+         name: task-id
+         in: path
+         schema:
+            type: string
+         required: true
+
+      sort:
+         name: sort
+         description: |
+            Sorting order options provided by firestore:  
+            * **1** ascending
+            * **2** descending
+         in: query
+         schema:
+            type: integer
+            format: int32
+            default: 2
+            enum:
+               - 1
+               - 2
+
+      limit:
+         description: Limit the number of results for endpoints that return an array of items.
+         name: limit
+         in: query
+         schema:
+            type: integer
+            minimum: 1
+
+      after:
+         description: Used for pagination. Provide a unix timestamp value to return results after / before the date specified (depending on the **sorting order** [ascending / descending]).
+         name: after
+         in: query
+         schema:
+            type: integer
+            minimum: 0
+            format: unix timestamp
+
+      before:
+         name: before
+         description: |
+            Used for pagination. Provide a unix timestamp value to return results after / before the date specified (depending on the **sorting order** [descending / ascending]).  
+            Must be after / before the date specified in the `after` query parameter (depending on the **sorting order** [ascending / descending]).
+         in: query
+         schema:
+            type: integer
+            minimum: 0
+            format: unix timestamp
+
+   responses:
+      userNotifications:
+         description: |
+            User notifications retrieved successfully.  
+            Results are ordered by `created_at` date in descending order.
+         content:
+            application/json:
+               schema:
+                  type: array
+                  items:
+                     $ref: "#/components/schemas/notification"
+               examples:
+                  userNotifications:
+                     summary: User Notifications
+                     description: Array of user Notifications
+                     value:
+                        - id: "KDlPN0v5COFk5zlRgkrK"
+                          created_at: "2023-08-21T13:13:16.672232Z"
+                          title: "foo"
+                          text: "bar"
+                          read: false
+                        - id: "rRij2j86JzU8rpQP9IBx"
+                          created_at: "2023-08-01T15:42:13.842223Z"
+                          read: true
+                          global: true
+         links:
+            getGlobalNotifications:
+               description: "If these notifications include a shared notification (`global: true`), its `id` can be used to request the corresponding global notification."
+               operationId: getGlobalNotification
+               parameters:
+                  notification-id: $response.body#/{index}/id
+
+      userNotification:
+         description: User notification retrieved successfully
+         content:
+            application/json:
+               schema:
+                  $ref: "#/components/schemas/notification"
+               examples:
+                  UserNotification:
+                     $ref: "#/components/examples/userNotification"
+                  SharedNotification:
+                     $ref: "#/components/examples/sharedNotification"
+         links:
+            getGlobalNotification:
+               $ref: "#/components/links/getGlobalNotification"
+
+      globalNotification:
+         description: Global notification retrieved successfully
+         content:
+            application/json:
+               schema:
+                  $ref: "#/components/schemas/notification"
+               examples:
+                  globalNotification:
+                     $ref: "#/components/examples/globalNotification"
+
+      preharvestTask:
+         description: Captcha preharvest task retrieved successfully
+         content:
+            application/json:
+               schema:
+                  $ref: "#/components/schemas/preharvestTask"
+               examples:
+                  preharvestTask:
+                     summary: Captcha preharvest task
+                     description: An exemplatory captcha preharvest task
+                     value:
+                        id: "rRij2j86JzU8rpQP9IBx"
+                        created_at: "2023-08-30T11:33:47.742543Z"
+                        title: "foo"
+                        text: "baz"
+
+      "200":
+         description: Ok
+         content:
+            text/plain:
+               schema:
+                  type: string
+               examples:
+                  ok:
+                     summary: Ok
+                     value: Ok
+
+      "302":
+         description: Found
+         content:
+            text/html; charset=UTF-8:
+               schema:
+                  description: Redirect to the url specified
+                  type: string
+                  pattern: ^<a href="{htmlEscape(url)}"> Found </a>.\n$
+               examples:
+                  dashboard:
+                     summary: Dashboard
+                     description: Redirect to the Copped AIO dashboard
+                     value: <a href="https://aio.copped-inc.com/"> Found </a>.\n
+
+      "304":
+         description: Not modified
+         content:
+            text/plain:
+               schema:
+                  type: string
+               examples:
+                  notModified:
+                     summary: Not modified
+                     value: Not modified
+
+      "400":
+         description: Bad request
+         content:
+            text/plain:
+               schema:
+                  type: string
+               examples:
+                  badRequest:
+                     summary: Bad request
+                     value: Bad request
+
+      "401":
+         description: Request unauthorized
+         content:
+            text/plain:
+               schema:
+                  type: string
+               examples:
+                  unauthorized:
+                     summary: Unauthorized
+                     value: Unauthorized
+
+      "403":
+         description: Forbidden
+         content:
+            text/plain:
+               schema:
+                  type: string
+               examples:
+                  forbidden:
+                     summary: Forbidden
+                     value: Forbidden
+
+      "404":
+         description: Not found
+         content:
+            text/plain:
+               schema:
+                  type: string
+               examples:
+                  internalServerError:
+                     summary: Not found
+                     value: Not found
+
+            text/html:
+               schema:
+                  description: Redirect to https://aio.copped-inc.com/utility/404
+
+      "500":
+         description: Internal server error
+         content:
+            text/plain:
+               schema:
+                  type: string
+               examples:
+                  internalServerError:
+                     summary: Internal server error
+                     value: Internal server error
+
+      "5XX":
+         description: Unexpected/-handled error
+         content:
+            text/plain:
+               schema:
+                  type: string
+            text/html; charset=UTF-8:
+               schema:
+                  type: string
+
+   requestBodies:
+      editNotificationReadstates:
+         description: The new read state to set all notifications to
+         content:
+            application/json:
+               schema:
+                  type: object
+                  properties:
+                     read:
+                        type: boolean
+                  required:
+                     - read
+               examples:
+                  markRead:
+                     summary: Mark read
+                     value:
+                        read: true
+                  markUnread:
+                     summary: Mark unread
+                     value:
+                        read: false
+         required: true
+
+      editUserNotification:
+         description: |
+            ```
+            All fields for this endpoint are optional.
+            Only provided fields will be changed.
+            ```
+            Non-administrators can only change the notification's read state. Fields other than `read` will be ignored.
+         content:
+            application/json:
+               schema:
+                  $ref: "#/components/schemas/notificationEdit"
+                  minProperties: 1
+               examples:
+                  userNotification:
+                     summary: User notification
+                     description: The field(s) to be changed to the value(s) specified.
+                     value:
+                        read: true
+         required: true
+
+   examples:
+      userNotification:
+         summary: User notification
+         description: An unread notification, sent to a specific user only.
+         value:
+            id: "KDlPN0v5COFk5zlRgkrK"
+            created_at: "2023-08-21T13:13:16.672232Z"
+            title: "foo"
+            text: "bar"
+            read: false
+
+      sharedNotification:
+         summary: Shared notification
+         description: |
+            A read shared notification, referencing a global notification. 
+            Note how both `text` and `title` aren't present. To populate those fields, a follow up request retrieving the global notification with the same `id` is required.
+         value:
+            id: "rRij2j86JzU8rpQP9IBx"
+            created_at: "2023-08-01T15:42:13.842223Z"
+            read: true
+            global: true
+
+      globalNotification:
+         summary: Global notification
+         description: An exemplatory global notification.
+         value:
+            id: "rRij2j86JzU8rpQP9IBx"
+            created_at: "2023-08-30T11:33:47.742543Z"
+            title: "foo"
+            text: "bar"
+
+   schemas:
+      notification:
+         description: |
+            #### Notifications  
+            Notifications are used to convey both personal and public messages and information to users. Thus, they can be grouped into **global** and "normal" notifications, referred to as **user** notifications to avoid ambiguities.  
+            Global and user notifications use distinct endpoints and are handled different internally. Nonetheless, they share the same schema utilizing different fields and are built upon the same infrastructure.
+            ### Global notifications
+            Global notifications get shared with all users.  
+            To allow for editing content of a global notification afterwards, users don't receive simple copies of global notifications. Instead, their user notification shares its ID with the global notification and has `global` set to `true`, indicating it's referencing a global notification.
+            ```
+            In global notifications, the global and read fields aren't present.
+            ```
+            ### User notifications
+            User notifications (simply notifications) are stored individually for each user. They consist of both personal and shared notifications.  
+            Shared notifications (`global: true`) are a special case, as they reference a global notification. While the shared notification doesn't include the `text` nor `title` fields, it has the same ID as the global notification it's referencing.  
+            To get the actual shared message's content, a subsequent call to retrieve the global notification's content is required for each shared notification.
+            ```
+            Shared notifications don't include the title and text fields. Additionally, user notifications always include the read field.
+            ```
+         allOf:
+            - type: object
+              properties:
+                 id:
+                    type: string
+                    minLength: 1
+                 created_at:
+                    $ref: "#/components/schemas/date"
+                 global:
+                    type: boolean
+                    default: false
+              required:
+                 - id
+                 - created_at
+            - $ref: "#/components/schemas/notificationEdit"
+
+      notificationCreate:
+         description: "`read` field will be ignored when creating global notifications"
+         $ref: "#/components/schemas/notificationEdit"
+         required:
+            - title
+            - text
+
+      notificationEdit:
+         description: "`read` field will be ignored when editing global messages"
+         type: object
+         properties:
+            title:
+               type: string
+               minLength: 1
+            text:
+               type: string
+               minLength: 1
+            read:
+               type: boolean
+               default: false
+
+      plan:
+         type: integer
+         description: |
+            #### Plans
+            The plan determines the type of subscription a user purchases. This affects permissions and billing for example.
+            Valid plans are:
+            * **1** Friends & Family
+            * **2** Basic
+            * **3** Developer - `equals admin permissions`
+
+            **0** means the user doesn't have an active subscription anymore.
+         minimum: 0
+         maximum: 3
+         externalDocumentation:
+            description: The source definition for valid plans.
+            url: https://github.com/Copped-Inc/aio-types/blob/v2/subscriptions/plan.go#L12
+
+      preharvestTask:
+         description: |
+            #### Captcha preharvest tasks
+            ... are used to generate captchas at certain times. This aims to pre-generate solved captchas to allow for more checkouts by having captchas readily available instead of having to wait for them.
+         allOf:
+            - type: object
+              description:
+              properties:
+                 id:
+                    type: string
+                    minLength: 1
+                 user_id:
+                    type: string
+                    minLength: 1
+                 state:
+                    $ref: "#/components/schemas/preharvestTaskState"
+                 uses:
+                    type: integer
+                    default: 0
+                    minimum: 0
+              required:
+                 - id
+                 - user_id
+                 - state
+            - $ref: "#/components/schemas/preharvestTaskCreate"
+
+      preharvestTaskCreate:
+         type: object
+         properties:
+            site:
+               $ref: "#/components/schemas/site"
+            routine:
+               type: boolean
+               default: false
+            date:
+               $ref: "#/components/schemas/date"
+            schedule:
+               $ref: "#/components/schemas/preharvestTaskSchedule"
+         required:
+            - site
+
+      preharvestTaskSchedule:
+         type: string
+         pattern: ^(?si:(?:every (?:(2|3|4|5|6) (day|week|month)(?:s)?|(day|week|month)))|(daily|weekly|monthly))$
+
+      preharvestTaskState:
+         type: integer
+         description: |
+            The current state of a captcha preharvest task:
+            * **1** running
+            * **2** stopped
+         minimum: 1
+         maximum: 2
+
+      date:
+         type: string
+         minLength: 1
+         format: date-time
+
+      site:
+         type: string
+         description: |
+            #### Sites
+            Sites represent the modules and functionality of the Copped AIO bot. Every site has further metadata storing those properties.
+            Currently, the list of sites is as following:
+            * **kith_eu** - [KithEU](https://eu.kith.com)
+            * **queue_it** - [Queue-it](https://queue-it.com)
+         enum:
+            - kith_eu
+            - queue_it
+         externalDocumentation:
+            description: Source defition of the Site type.
+            url: https://github.com/Copped-Inc/aio-types/blob/v2/modules/site.go
+
+   securitySchemes:
+      admin:
+         description: Authorization for internal traffic and certain endpoints
+         type: apiKey
+         in: header
+         name: Password
+      user:
+         description: Authorization used by normal users and thus by most generic request
+         type: apiKey
+         in: cookie
+         name: authorization
+
+   links:
+      getGlobalNotification:
+         description: "If this user notification is a shared notification (`global: true`), its `id` can be used to request the corresponding global notification."
+         operationId: getGlobalNotification
+         parameters:
+            notification-id: $response.body#/id

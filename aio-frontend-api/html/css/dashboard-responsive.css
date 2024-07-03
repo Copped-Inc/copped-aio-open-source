@@ -1,0 +1,274 @@
+@media all and (max-width: 650px) {
+
+    .tabs {
+        display: none;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        flex-direction: column;
+    }
+
+    .tabs img {
+        display: none;
+    }
+
+    .tab {
+        height: 50px;
+        border-radius: 5px;
+        margin: 20px;
+        border: none;
+    }
+
+    .drag-button {
+        display: none;
+    }
+
+    .notification {
+        width: calc(100% - 50px);
+    }
+
+    .notificationholder {
+        width: calc(100% - 20px);
+        height: calc(100% - 170px);
+    }
+
+    .nothing {
+        height: 100%;
+    }
+
+}
+
+@media all and (max-width: 2559px) {
+
+    .dashboard {
+        width: calc(2560px * .8 + var(--dashboardmargin));
+    }
+
+    .checkouts {
+        top: 0;
+        left: calc(2560px * .55);
+        height: calc(1440px * .55 - var(--dashboardmargin));
+        width: calc(2560px * .25 - var(--dashboardmargin));
+    }
+
+    .stores {
+        top: calc(1440px * .55);
+        left: calc(2560px * .50 + var(--dashboardmargin));
+        height: calc(1440px * .20 - var(--dashboardmargin));
+        width: calc(2560px * .30 - var(--dashboardmargin));
+    }
+
+    .start {
+        top: calc(1440px * .55 + var(--dashboardmargin));
+        left: var(--dashboardmargin);
+        height: calc(1440px * .20 - var(--dashboardmargin));
+        width: calc(2560px * .25 - var(--dashboardmargin));
+    }
+
+    .keywords {
+        top: calc(1440px * .55 + var(--dashboardmargin));
+        left: calc(2560px * .25 + var(--dashboardmargin));
+        height: calc(1440px * .20 - var(--dashboardmargin));
+        width: calc(2560px * .25 - var(--dashboardmargin));
+    }
+
+    .userdata {
+        margin-bottom: var(--dashboardmargin);
+        top: calc(1440px * .75 + var(--dashboardmargin));
+    }
+
+    .webhook {
+        top: calc(1440px * .75 + var(--dashboardmargin));
+    }
+
+    .instances {
+        top: calc(1440px * .75 + var(--dashboardmargin));
+    }
+
+    .dashboardplaceholder {
+        top: calc(1440px * 1.08);
+    }
+
+}
+
+@media all and (max-width: 2080px) {
+
+    .dashboard {
+        width: calc(2560px * .55 + var(--dashboardmargin));
+    }
+
+    .keywords {
+        top: calc(1440px * .55 + var(--dashboardmargin));
+        left: calc(2560px * .25 + var(--dashboardmargin));
+        height: calc(1440px * .20 - var(--dashboardmargin));
+        width: calc(2560px * .30 - var(--dashboardmargin));
+    }
+
+    .instances {
+        top: calc(1440px * .75 + var(--dashboardmargin));
+        left: var(--dashboardmargin);
+        width: calc(2560px * .55 - var(--dashboardmargin));
+    }
+
+    .checkouts {
+        top: calc(1440px * 1.08);
+        left: 0;
+        height: calc(1440px * .45 - var(--dashboardmargin));
+        width: calc(2560px * .30 - var(--dashboardmargin));
+    }
+
+    .webhook {
+        top: calc(1440px * 1.08 + var(--dashboardmargin));
+        left: calc(2560px * .30);
+        height: calc(1440px * .45 - var(--dashboardmargin));
+        width: calc(2560px * .25 - var(--dashboardmargin));
+    }
+
+    .userdata {
+        top: calc(1440px * 1.53 + var(--dashboardmargin));
+    }
+
+    .stores {
+        top: calc(1440px * 1.53);
+        left: calc(2560px * .20 + var(--dashboardmargin));
+        height: calc(1440px * .33 - var(--dashboardmargin));
+        width: calc(2560px * .35 - var(--dashboardmargin));
+    }
+
+    .dashboardplaceholder {
+        top: calc(1440px * 1.86);
+    }
+
+}
+
+@media all and (max-width: 1435px) {
+
+    .dashboard {
+        width: 99%;
+    }
+
+    .switch button {
+        font-size: 12px;
+    }
+
+    .chart {
+        margin-left: .5%;
+        width: 99%;
+        height: calc(1440px * (.55 - var(--responsive)) - var(--dashboardmargin));
+    }
+
+    .start {
+        margin-left: calc(.5% - var(--dashboardmargin));
+        width: 99%;
+        top: calc(1440px * (.55 - var(--responsive)) + var(--dashboardmargin));
+    }
+
+    .keywords {
+        margin-left: calc(.5% - var(--dashboardmargin));
+        left: var(--dashboardmargin);
+        top: calc(1440px * (.75 - var(--responsive)) + var(--dashboardmargin));
+        width: 99%;
+    }
+
+    .instances {
+        margin-left: calc(.5% - var(--dashboardmargin));
+        top: calc(1440px * (.95 - var(--responsive)) + var(--dashboardmargin));
+        width: 99%;
+    }
+
+    .checkouts {
+        margin-left: .5%;
+        top: calc(1440px * (1.28 - var(--responsive)));
+        width: 99%;
+    }
+
+    .stores {
+        margin-left: calc(.5% - var(--dashboardmargin));
+        top: calc(1440px * (1.73 - var(--responsive)));
+        left: var(--dashboardmargin);
+        width: 99%;
+        height: calc(1440px * .15 - var(--dashboardmargin));
+    }
+
+    .webhook {
+        margin-left: .5%;
+        top: calc(1440px * (1.88 - var(--responsive)) + var(--dashboardmargin));
+        width: 99%;
+        left: 0;
+    }
+
+    .userdata {
+        margin-left: .5%;
+        top: calc(1440px * (2.33  - var(--responsive)) + var(--dashboardmargin));
+        width: 99%;
+    }
+
+    .dashboardplaceholder {
+        top: calc(1440px * 2.66);
+    }
+
+}
+
+@media all and (max-width: 980px) {
+
+    .dashboardplaceholder {
+        top: calc(1440px * 2.51);
+    }
+
+}
+
+@media all and (max-width: 700px) {
+
+    .dashboardplaceholder {
+        top: calc(1440px * 2.41);
+    }
+
+}
+
+@media all and (max-width: 500px) {
+
+    .switch {
+        font-size: 12px;
+    }
+
+    .top {
+        margin-top: 15px;
+    }
+
+    .dashboardplaceholder {
+        top: calc(1440px * 2.36);
+    }
+
+}
+
+@media all and (max-width: 430px) {
+
+    .hasswitch h2 {
+        display: none;
+    }
+
+    .startbutton .gif {
+        width: 150px;
+        height: auto;
+    }
+
+    .startbutton .imgholder {
+        width: 150px;
+        height: 150px;
+    }
+
+    .startbutton .logo {
+        width: 100px;
+        height: auto;
+    }
+
+    .startbutton button {
+        width: 150px;
+        height: 150px;
+    }
+
+    .top {
+        margin-top: 25px;
+    }
+
+}

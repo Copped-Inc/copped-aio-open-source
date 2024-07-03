@@ -1,0 +1,42 @@
+name: Go
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: self-hosted
+    env:
+      GOPRIVATE: github.com/infinitare/disgo
+      DOCKER_BUILDKIT: 1
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.19'
+
+      - name: Build
+        run: go build -v .
+
+      - name: Stop Service
+        continue-on-error: true
+        run: sudo systemctl stop instances-api.service
+        
+      - name: Disable Service
+        continue-on-error: true
+        run: sudo systemctl disable instances-api.service
+
+      - name: Copy exe to _work
+        run: cp ./instances-api ~/aio-instances-api/_work
+
+      - name: Copy client to _work
+        run: cp -r ./client ~/aio-instances-api/_work
+        
+      - name: Enable Service
+        run: sudo systemctl enable instances-api.service
+
+      - name: Restart Service
+        run: sudo systemctl start instances-api.service

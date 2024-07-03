@@ -1,0 +1,32 @@
+{
+    "title": "captcha preharvest",
+    "custom_id": "captcha preharvest",
+    "components": [
+        {
+            "type": 1,
+            "components": [
+                {
+                    "type": 4,
+                    "label": "formatting information",
+                    "style": 2,
+                    "custom_id": "schedule",
+                    "required": false,
+                    "value": "Captcha preharvest task routines follow a certain pattern:\nMust be either \"daily\" / \"weekly\" / \"monthly\" or \"every (2-6) day/week/month(s)\".\nNote that it is case insensitive. Examples for valid inputs:\n\"every 3 days\"\n\"weekly\"\n\"every month\" (equal to monthly)\n\nNote that all those schedules take effect after the first execution specified by the delay provided earlier.\nIf you want to execute preharvest schedules more frequently than daily, consider using multiple captcha preharvest tasks."
+                }
+            ]
+        },
+        {
+            "type": 1,
+            "components": [
+                {
+                    "type": 4,
+                    "label": "schedule",
+                    "style": 1,
+                    "custom_id": "schedule",
+                    "required": true,
+                    "placeholder": "Type in schedule here."
+                }
+            ]
+        }
+    ]
+}

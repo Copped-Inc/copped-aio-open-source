@@ -1,0 +1,41 @@
+.signal {
+    position: fixed;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.signal .holder {
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    margin-top: 25px;
+    padding: 10px;
+    background-color: var(--dark);
+    border: var(--border);
+    border-radius: var(--border-radius);
+}
+
+.signal .holder h4 {
+    margin: 0 25px 0 10px;
+    margin-block-end: 0;
+    margin-block-start: 0;
+}
+
+.signal .good {
+    border-color: var(--green);
+}
+
+.signal .bad {
+    border-color: var(--red);
+}
+
+@media all and (max-width: 700px) {
+
+    .signal .holder {
+        margin-top: 50px;
+    }
+
+}

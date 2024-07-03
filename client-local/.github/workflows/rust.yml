@@ -1,0 +1,22 @@
+name: Rust
+
+on:
+  push:
+    branches: [ "master" ]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  build:
+
+    runs-on: self-hosted
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Copy exe to Docker
+      run: docker cp "target/debug/client-local.exe" database.copped-inc.com:"./build/"
+
+    - name: Copy version to Docker
+      run: docker cp "version" database.copped-inc.com:"./build/"
