@@ -21,7 +21,7 @@ And then I started coding...
 - **Client**: Rust (this shit is so fast I love it)
 
 ## Structure
-![img.png](structure.png)
+![img.png](img/structure.png)
 #### Explanation:
 - **aio-frontend-api**: The main frontend interface for users to interact with the bot.
   - Fully responsive.
@@ -63,24 +63,24 @@ Special thanks to my very good friend [Valle](https://github.com/valdotle) who h
 Unfortunately, I only have some old pictures of the frontend parts, where some features didn't work, but you should get the idea.
 
 #### Dashboard
-![Splash](splash.png)
-![Dashboard](dashboard.png)
+![Splash](img/splash.png)
+![Dashboard](img/dashboard.png)
 
 #### Admin Server Page
-![Admin Server Dashboard](admin-server-dashboard.png)
-![Charts](charts.png)
-![Request Info](request-info.png)
+![Admin Server Dashboard](img/admin-server-dashboard.png)
+![Charts](img/charts.png)
+![Request Info](img/request-info.png)
 
 #### Admin User Page
-![Admin User Dashboard](admin-user-dashboard.png)
-![User Info Modal](user-info-modal.png)
+![Admin User Dashboard](img/admin-user-dashboard.png)
+![User Info Modal](img/user-info-modal.png)
 
 #### Payments Client
-![Payments](payments.png)
+![Payments](img/payments.png)
 
 #### Discord Bot Functions
-![Discord Bot Commands 1](discord-bot.png)
-![Discord Bot Commands 2](discord-bot-2.png)
+![Discord Bot Commands 1](img/discord-bot.png)
+![Discord Bot Commands 2](img/discord-bot-2.png)
 
 ## Final Notes for Future Development
 - Each folder is a separate GitHub repo.
@@ -88,4 +88,4 @@ Unfortunately, I only have some old pictures of the frontend parts, where some f
 - No env files are needed.
 - The module 'github.com/Copped-Inc/aio-types' is a package you can find in /aio-types.
   - This package is needed in every repo.
-- /aio-database-api is not fully updated!
+- /aio-database-api/openai.yaml is not fully updated!
